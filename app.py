@@ -47,20 +47,24 @@ def recommend(movie):
         index = movies[movies['title'] == movie].index[0]
     except IndexError:
         st.error("Movie not found in the dataset.")
-        return [], []
+        return [], [], [], []
         
     distances = sorted(list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
     
     recommended_movie_names = []
     recommended_movie_posters = []
+    recommended_movie_years = []
+    recommended_movie_ratings = []
 
     for i in distances[1:6]:
         movie_id = movies.iloc[i[0]].movie_id
         
         recommended_movie_posters.append(fetch_poster(movie_id))
         recommended_movie_names.append(movies.iloc[i[0]].title)
+        recommended_movie_years.append(movies.iloc[i[0]].year)
+        recommended_movie_ratings.append(movies.iloc[i[0]].vote_average)
 
-    return recommended_movie_names, recommended_movie_posters
+    return recommended_movie_names, recommended_movie_posters, recommended_movie_years, recommended_movie_ratings
 
 # --- App Layout ---
 st.set_page_config(layout="wide")
@@ -93,7 +97,7 @@ selected_movie = st.selectbox(
 
 if st.button('Show Recommendation'):
     with st.spinner('Finding recommendations...'):
-        recommended_movie_names, recommended_movie_posters = recommend(selected_movie)
+        recommended_movie_names, recommended_movie_posters, recommended_movie_years, recommended_movie_ratings = recommend(selected_movie)
     
     if recommended_movie_names:
         cols = st.columns(5)
@@ -101,4 +105,12 @@ if st.button('Show Recommendation'):
             with col:
                 st.text(recommended_movie_names[i])
                 st.image(recommended_movie_posters[i])
+                year = recommended_movie_years[i]
+                if pd.notna(year):
+                    st.caption(f"Year: {int(year)}")
+                else:
+                    st.caption("Year: N/A")
+                
+                rating = recommended_movie_ratings[i]
+                st.caption(f"Rating: {rating:.1f} ⭐")
 
