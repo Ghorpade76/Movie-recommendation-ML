@@ -121,7 +121,8 @@ Now run,
 streamlit run app.py
 ```
 
-
+output-
+movies with review
 ```bash
 Author: Bappy Ahmed
 Data Scientist
