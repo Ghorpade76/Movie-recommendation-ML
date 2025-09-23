@@ -122,7 +122,7 @@ streamlit run app.py
 ```
 
 output-
-movies with review n year
+movies with review n year of release
 ```bash
 Author: Bappy Ahmed
 Data Scientist
